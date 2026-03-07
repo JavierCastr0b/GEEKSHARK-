@@ -1,0 +1,8 @@
+{
+  "outputDirectory": "frontend/build/web",
+  "buildCommand": "echo 'Pre-built Flutter web assets'",
+  "installCommand": "echo 'No install needed'",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
