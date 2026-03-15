@@ -98,7 +98,9 @@ class _SavingsScreenState extends State<SavingsScreen>
 
     return SliverAppBar(
       expandedHeight: 260,
-      pinned: true,
+      pinned: false,
+      toolbarHeight: 0,
+      automaticallyImplyLeading: false,
       backgroundColor: AppColors.navy700,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
@@ -216,15 +218,6 @@ class _SavingsScreenState extends State<SavingsScreen>
               ),
             ),
           ),
-        ),
-        collapseMode: CollapseMode.parallax,
-      ),
-      title: Text(
-        'Ahorros',
-        style: GoogleFonts.poppins(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: AppColors.white,
         ),
       ),
     );

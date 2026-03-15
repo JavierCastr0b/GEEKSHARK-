@@ -38,23 +38,31 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildAppBar(BuildContext context) {
     return SliverAppBar(
       expandedHeight: 220,
-      pinned: true,
+      pinned: false,
+      toolbarHeight: 0,
+      automaticallyImplyLeading: false,
       backgroundColor: AppColors.navy700,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.settings_outlined, color: AppColors.white),
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const SettingsScreen()),
-          ),
-        ),
-      ],
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
           decoration: const BoxDecoration(
             gradient: AppGradients.navyDeepGradient,
           ),
           child: SafeArea(
-            child: Column(
+            child: Stack(
+              children: [
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: IconButton(
+                    icon: const Icon(Icons.settings_outlined,
+                        color: AppColors.white),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (_) => const SettingsScreen()),
+                    ),
+                  ),
+                ),
+                Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
@@ -135,16 +143,9 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ],
             ),
+              ],
+            ),
           ),
-        ),
-        collapseMode: CollapseMode.parallax,
-      ),
-      title: Text(
-        'Perfil',
-        style: GoogleFonts.poppins(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: AppColors.white,
         ),
       ),
     );

@@ -4,12 +4,30 @@ import '../../core/theme.dart';
 import '../../core/mock_data.dart';
 import '../../core/widgets/shark_guide.dart';
 import '../../core/widgets/gs_card.dart';
-import '../learn/learn_screen.dart';
+import '../learn/lesson_screen.dart';
 import '../savings/savings_screen.dart';
 import '../savings/add_transaction_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  // Track which learning paths are expanded
+  late final Map<String, bool> _expanded;
+
+  @override
+  void initState() {
+    super.initState();
+    // First unlocked path starts expanded, rest collapsed
+    _expanded = {
+      for (int i = 0; i < MockData.learningPaths.length; i++)
+        MockData.learningPaths[i].id: i == 0,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,17 +41,11 @@ class HomeScreen extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 20),
-                _buildStatsRow(context),
-                const SizedBox(height: 20),
-                _buildContinueLearning(context),
-                const SizedBox(height: 20),
-                _buildQuickActions(context),
-                const SizedBox(height: 20),
-                _buildSavingsSummary(context),
-                const SizedBox(height: 20),
                 _buildSharkTip(context),
                 const SizedBox(height: 20),
                 _buildRecentActivity(context),
+                const SizedBox(height: 24),
+                _buildLearnSection(context),
                 const SizedBox(height: 80),
               ]),
             ),
@@ -53,9 +65,10 @@ class HomeScreen extends StatelessWidget {
             : 'Buenas noches';
 
     return SliverAppBar(
-      expandedHeight: 200,
-      pinned: true,
-      stretch: true,
+      expandedHeight: 155,
+      pinned: false,
+      toolbarHeight: 0,
+      automaticallyImplyLeading: false,
       backgroundColor: AppColors.navy700,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
@@ -92,17 +105,19 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      // Streak badge
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: AppColors.amber.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.amber.withOpacity(0.4)),
+                          border: Border.all(
+                              color: AppColors.amber.withOpacity(0.4)),
                         ),
                         child: Row(
                           children: [
-                            const Text('🔥', style: TextStyle(fontSize: 14)),
+                            const Text('🔥',
+                                style: TextStyle(fontSize: 14)),
                             const SizedBox(width: 4),
                             Text(
                               '${MockData.userStreak} dias',
@@ -116,7 +131,6 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      // Notifications
                       Container(
                         width: 40,
                         height: 40,
@@ -133,18 +147,19 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  // XP Bar
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: AppColors.cyan.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           children: [
-                            const Text('⭐', style: TextStyle(fontSize: 12)),
+                            const Text('⭐',
+                                style: TextStyle(fontSize: 12)),
                             const SizedBox(width: 4),
                             Text(
                               '${MockData.userXP} XP',
@@ -163,20 +178,23 @@ class HomeScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   'Nivel ${MockData.userLevel}',
                                   style: GoogleFonts.poppins(
                                     fontSize: 11,
-                                    color: AppColors.white.withOpacity(0.6),
+                                    color:
+                                        AppColors.white.withOpacity(0.6),
                                   ),
                                 ),
                                 Text(
                                   '${MockData.userXP}/500 XP',
                                   style: GoogleFonts.poppins(
                                     fontSize: 11,
-                                    color: AppColors.white.withOpacity(0.6),
+                                    color:
+                                        AppColors.white.withOpacity(0.6),
                                   ),
                                 ),
                               ],
@@ -186,7 +204,8 @@ class HomeScreen extends StatelessWidget {
                               progress: MockData.userXP / 500,
                               height: 6,
                               foregroundColor: AppColors.cyan,
-                              backgroundColor: AppColors.white.withOpacity(0.15),
+                              backgroundColor:
+                                  AppColors.white.withOpacity(0.15),
                             ),
                           ],
                         ),
@@ -198,37 +217,11 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        collapseMode: CollapseMode.parallax,
-      ),
-      title: Row(
-        children: [
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: 'Geek',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.white,
-                  ),
-                ),
-                TextSpan(
-                  text: 'Shark',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.cyan,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
 
+  // ── Stats ──────────────────────────────────────────────────────────
   Widget _buildStatsRow(BuildContext context) {
     return Row(
       children: [
@@ -257,105 +250,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContinueLearning(BuildContext context) {
-    final path = MockData.learningPaths.first;
-    final nextLesson = path.lessons.firstWhere(
-      (l) => !l.isCompleted,
-      orElse: () => path.lessons.last,
-    );
-
-    return GsCard(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const LearnScreen()),
-      ),
-      gradient: AppGradients.navyGradient,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.cyan.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  'CONTINUAR',
-                  style: GoogleFonts.poppins(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.cyan,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '${path.lessons.where((l) => l.isCompleted).length}/${path.lessons.length} lecciones',
-                style: GoogleFonts.poppins(
-                  fontSize: 11,
-                  color: AppColors.white.withOpacity(0.5),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Text(nextLesson.emoji, style: const TextStyle(fontSize: 28)),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      nextLesson.title,
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.white,
-                      ),
-                    ),
-                    Text(
-                      nextLesson.subtitle,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: AppColors.white.withOpacity(0.6),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: AppColors.cyan,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.play_arrow_rounded,
-                  color: AppColors.navy900,
-                  size: 20,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          GsProgressBar(
-            progress: path.progress,
-            height: 6,
-            backgroundColor: AppColors.white.withOpacity(0.1),
-            gradient: const LinearGradient(colors: [AppColors.cyan, AppColors.green]),
-          ),
-        ],
-      ),
-    );
-  }
-
+  // ── Quick Actions ──────────────────────────────────────────────────
   Widget _buildQuickActions(BuildContext context) {
     final actions = [
       {
@@ -364,7 +259,8 @@ class HomeScreen extends StatelessWidget {
         'color': AppColors.red,
         'bg': AppColors.redLight,
         'onTap': () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const AddTransactionScreen()),
+              MaterialPageRoute(
+                  builder: (_) => const AddTransactionScreen()),
             ),
       },
       {
@@ -374,7 +270,8 @@ class HomeScreen extends StatelessWidget {
         'bg': AppColors.greenBg,
         'onTap': () => Navigator.of(context).push(
               MaterialPageRoute(
-                  builder: (_) => const AddTransactionScreen(isIncome: true)),
+                  builder: (_) =>
+                      const AddTransactionScreen(isIncome: true)),
             ),
       },
       {
@@ -412,8 +309,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: a['onTap'] as VoidCallback,
                 child: Container(
                   margin: EdgeInsets.only(
-                    right: a == actions.last ? 0 : 10,
-                  ),
+                      right: a == actions.last ? 0 : 10),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
                     color: AppColors.white,
@@ -463,6 +359,330 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  // ── Learn Section ──────────────────────────────────────────────────
+  Widget _buildLearnSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section header with streak
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Aprender',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.navy800,
+                ),
+              ),
+            ),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.amber.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(20),
+                border:
+                    Border.all(color: AppColors.amber.withOpacity(0.3)),
+              ),
+              child: Row(
+                children: [
+                  const Text('🔥', style: TextStyle(fontSize: 12)),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${MockData.userStreak} dias · ${MockData.userXP} XP',
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.amber,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        // Collapsible path cards
+        ...MockData.learningPaths
+            .map((p) => _buildCollapsiblePath(context, p)),
+      ],
+    );
+  }
+
+  Widget _buildCollapsiblePath(BuildContext context, LearningPath path) {
+    final isExpanded = _expanded[path.id] ?? false;
+    final completedCount =
+        path.lessons.where((l) => l.isCompleted).length;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: path.isLocked ? null : path.gradient,
+          color: path.isLocked ? AppColors.white : null,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.navy800.withOpacity(0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            // ── Header row (always visible, tap to toggle) ──
+            GestureDetector(
+              onTap: path.isLocked
+                  ? () => _showLockedDialog(context)
+                  : () => setState(
+                      () => _expanded[path.id] = !isExpanded),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Text(path.emoji,
+                        style: const TextStyle(fontSize: 26)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            path.title,
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: path.isLocked
+                                  ? AppColors.gray700
+                                  : AppColors.white,
+                            ),
+                          ),
+                          Text(
+                            path.isLocked
+                                ? 'Bloqueado'
+                                : '$completedCount/${path.lessons.length} lecciones',
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: path.isLocked
+                                  ? AppColors.gray400
+                                  : AppColors.white.withOpacity(0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (path.isLocked)
+                      const Icon(Icons.lock_rounded,
+                          color: AppColors.gray300, size: 20)
+                    else ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppColors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${path.totalXP} XP',
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      AnimatedRotation(
+                        turns: isExpanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 250),
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: AppColors.white.withOpacity(0.8),
+                          size: 22,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+
+            // ── Progress bar (only when not locked) ──
+            if (!path.isLocked && path.lessons.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                child: GsProgressBar(
+                  progress: path.progress,
+                  height: 4,
+                  backgroundColor: AppColors.white.withOpacity(0.15),
+                  gradient: const LinearGradient(
+                      colors: [AppColors.cyan, AppColors.green]),
+                ),
+              ),
+            ],
+
+            // ── Collapsible lessons list ──
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: isExpanded && !path.isLocked
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                      child: Column(
+                        children: path.lessons
+                            .asMap()
+                            .entries
+                            .map((e) => _buildLessonItem(
+                                context, e.value, e.key, path))
+                            .toList(),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLessonItem(
+      BuildContext context, Lesson lesson, int index, LearningPath path) {
+    return GestureDetector(
+      onTap: lesson.isLocked
+          ? null
+          : () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) =>
+                      LessonScreen(lesson: lesson, path: path),
+                ),
+              ),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: lesson.isCompleted
+              ? AppColors.white.withOpacity(0.15)
+              : AppColors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: lesson.isCompleted
+                ? AppColors.green.withOpacity(0.4)
+                : AppColors.white.withOpacity(0.1),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: lesson.isCompleted
+                    ? AppColors.green
+                    : lesson.isLocked
+                        ? AppColors.white.withOpacity(0.1)
+                        : AppColors.cyan.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                lesson.isCompleted
+                    ? Icons.check_rounded
+                    : lesson.isLocked
+                        ? Icons.lock_rounded
+                        : Icons.play_arrow_rounded,
+                color: lesson.isCompleted
+                    ? AppColors.white
+                    : lesson.isLocked
+                        ? AppColors.white.withOpacity(0.3)
+                        : AppColors.cyan,
+                size: 16,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(lesson.emoji, style: const TextStyle(fontSize: 16)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lesson.title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: lesson.isLocked
+                          ? AppColors.white.withOpacity(0.35)
+                          : AppColors.white,
+                    ),
+                  ),
+                  Text(
+                    '${lesson.durationMinutes} min · +${lesson.xpReward} XP',
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      color: AppColors.white.withOpacity(0.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (lesson.isCompleted)
+              const Text('⭐', style: TextStyle(fontSize: 14)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLockedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('🔒', style: TextStyle(fontSize: 48)),
+            const SizedBox(height: 12),
+            Text(
+              'Ruta bloqueada',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.navy800,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Completa las lecciones de la ruta anterior para desbloquear esta.',
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                color: AppColors.gray500,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Entendido',
+                style: GoogleFonts.poppins(
+                  color: AppColors.cyan,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Savings Summary ────────────────────────────────────────────────
   Widget _buildSavingsSummary(BuildContext context) {
     final goal = MockData.savingsGoals.first;
     return GsCard(
@@ -506,9 +726,7 @@ class HomeScreen extends StatelessWidget {
               Text(
                 'S/. ${goal.currentAmount.toStringAsFixed(0)} ahorrados',
                 style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  color: AppColors.gray500,
-                ),
+                    fontSize: 12, color: AppColors.gray500),
               ),
               Text(
                 'Meta: S/. ${goal.targetAmount.toStringAsFixed(0)}',
@@ -525,6 +743,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  // ── Shark Tip ──────────────────────────────────────────────────────
   Widget _buildSharkTip(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -536,11 +755,13 @@ class HomeScreen extends StatelessWidget {
       child: const SharkGuide(
         size: 56,
         mood: SharkMood.thinking,
-        message: 'Tip del dia: Intenta ahorrar antes de gastar. Separa tu ahorro apenas recibes tu salario y trata ese dinero como un gasto fijo.',
+        message:
+            'Tip del dia: Intenta ahorrar antes de gastar. Separa tu ahorro apenas recibes tu salario y trata ese dinero como un gasto fijo.',
       ),
     );
   }
 
+  // ── Recent Activity ────────────────────────────────────────────────
   Widget _buildRecentActivity(BuildContext context) {
     final recent = MockData.transactions.reversed.take(3).toList();
     return Column(
@@ -559,7 +780,8 @@ class HomeScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SavingsScreen()),
+                MaterialPageRoute(
+                    builder: (_) => const SavingsScreen()),
               ),
               child: Text(
                 'Ver todo',
@@ -612,9 +834,7 @@ class HomeScreen extends StatelessWidget {
                 Text(
                   t.category,
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
-                    color: AppColors.gray400,
-                  ),
+                      fontSize: 11, color: AppColors.gray400),
                 ),
               ],
             ),

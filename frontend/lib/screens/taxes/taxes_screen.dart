@@ -40,7 +40,9 @@ class TaxesScreen extends StatelessWidget {
   Widget _buildAppBar(BuildContext context) {
     return SliverAppBar(
       expandedHeight: 160,
-      pinned: true,
+      pinned: false,
+      toolbarHeight: 0,
+      automaticallyImplyLeading: false,
       backgroundColor: AppColors.navy700,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
@@ -91,15 +93,6 @@ class TaxesScreen extends StatelessWidget {
               ),
             ),
           ),
-        ),
-        collapseMode: CollapseMode.parallax,
-      ),
-      title: Text(
-        'Impuestos',
-        style: GoogleFonts.poppins(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: AppColors.white,
         ),
       ),
     );

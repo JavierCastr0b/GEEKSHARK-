@@ -36,7 +36,9 @@ class LearnScreen extends StatelessWidget {
   Widget _buildAppBar(BuildContext context) {
     return SliverAppBar(
       expandedHeight: 140,
-      pinned: true,
+      pinned: false,
+      toolbarHeight: 0,
+      automaticallyImplyLeading: false,
       backgroundColor: AppColors.navy700,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
@@ -80,15 +82,6 @@ class LearnScreen extends StatelessWidget {
               ),
             ),
           ),
-        ),
-        collapseMode: CollapseMode.parallax,
-      ),
-      title: Text(
-        'Aprender',
-        style: GoogleFonts.poppins(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: AppColors.white,
         ),
       ),
     );
