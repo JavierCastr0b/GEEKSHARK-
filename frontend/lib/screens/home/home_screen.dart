@@ -5,8 +5,8 @@ import '../../core/mock_data.dart';
 import '../../core/widgets/shark_guide.dart';
 import '../../core/widgets/gs_card.dart';
 import '../learn/lesson_screen.dart';
-import '../savings/savings_screen.dart';
 import '../savings/add_transaction_screen.dart';
+import '../savings/savings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -42,8 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 20),
                 _buildSharkTip(context),
-                const SizedBox(height: 20),
-                _buildRecentActivity(context),
                 const SizedBox(height: 24),
                 _buildLearnSection(context),
                 const SizedBox(height: 80),
@@ -761,94 +759,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ── Recent Activity ────────────────────────────────────────────────
-  Widget _buildRecentActivity(BuildContext context) {
-    final recent = MockData.transactions.reversed.take(3).toList();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Actividad reciente',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: AppColors.navy800,
-              ),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (_) => const SavingsScreen()),
-              ),
-              child: Text(
-                'Ver todo',
-                style: GoogleFonts.poppins(
-                  fontSize: 13,
-                  color: AppColors.cyan,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        ...recent.map((t) => _buildTransactionItem(t)),
-      ],
-    );
-  }
-
-  Widget _buildTransactionItem(Transaction t) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.navy800.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Text(t.categoryEmoji, style: const TextStyle(fontSize: 22)),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  t.title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.gray800,
-                  ),
-                ),
-                Text(
-                  t.category,
-                  style: GoogleFonts.poppins(
-                      fontSize: 11, color: AppColors.gray400),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            '${t.isIncome ? '+' : '-'} S/. ${t.amount.toStringAsFixed(0)}',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: t.isIncome ? AppColors.green : AppColors.red,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

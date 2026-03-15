@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
 import '../home/home_screen.dart';
 import '../savings/savings_screen.dart';
-import '../taxes/taxes_screen.dart';
 import '../profile/profile_screen.dart';
 
 class MainShell extends StatefulWidget {
@@ -20,14 +19,12 @@ class _MainShellState extends State<MainShell> {
   final _screens = const [
     HomeScreen(),
     SavingsScreen(),
-    TaxesScreen(),
     ProfileScreen(),
   ];
 
   final _items = const [
     _NavItem(icon: Icons.home_rounded, label: 'Inicio'),
     _NavItem(icon: Icons.savings_rounded, label: 'Ahorros'),
-    _NavItem(icon: Icons.receipt_long_rounded, label: 'Impuestos'),
     _NavItem(icon: Icons.person_rounded, label: 'Perfil'),
   ];
 
