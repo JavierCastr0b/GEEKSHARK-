@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter analyze:*)",
+      "Bash(grep -v \"^$\\\\|info\\\\|Analyzing\")",
+      "Bash(grep -v \"^$\\\\|info\\\\|Analyzing\\\\|ran in\")"
+    ]
+  }
+}
